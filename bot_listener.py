@@ -55,5 +55,3 @@ if __name__ == '__main__':
         bot.polling()
     except Exception as  e:
         logging.warn('Status : Error {}'.format(e))
-
-
