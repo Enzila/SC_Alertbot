@@ -15,7 +15,7 @@ class latest_update(Controller):
         self.latestupdate()
 
     def latestupdate(self):
-        result = ['\n\n\n*Latest Data IPD \t[{}]*\n'.format(self.current_time.strftime('%d.%m.%Y'))]
+        result = ['\n\n\n*--\tLatest Data IPD \t[{}]\t--*\n'.format(self.current_time.strftime('%d.%m.%Y'))]
         for a in self.config.get('elastic_checker_list', 'ipd_index').split(';'):
             if 'news-online' in a:
                 get_res = Controller().elastic_get_count(self.config.get('elastic', 'ipd'), index=a, range_by='pubDate')

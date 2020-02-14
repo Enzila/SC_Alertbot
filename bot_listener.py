@@ -2,9 +2,9 @@ from get.get_from_beanstalk import from_beanstalk
 from get.get_latest_update import latest_update
 from get.get_from_kafka import from_kafka
 from get.get_from_nsq import from_nsq
+from get.get_from_csv import from_csv
 from controller.controller import Controller
-import logging
-
+import logging,sys,telebot
 
 bot = Controller().bot_controller()
 
@@ -44,14 +44,32 @@ def latest_updates(message):
     except Exception as e:
         bot.reply_to(message, "Error!! : {}".format(e))
 
+@bot.message_handler(commands=['get_token_file'])
+def token_file(message):
+    try:
+        bot.send_document(message.chat.id, open('src/google_.csv','rb'))
+        bot.send_document(message.chat.id, open('src/twitter_.csv', 'rb'))
+    except Exception as e:
+        bot.reply_to(message, "Error!! : {}".format(e))
 
+@bot.message_handler(commands=['get_token_status'])
+def latest_updates(message):
+    try:
+        bot.reply_to(message, "\n".join(from_csv().final.get('token')), parse_mode='markdown')
+    except Exception as e:
+        bot.reply_to(message, "Error!! : {}".format(e))
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        format='[%(asctime)s] - [%(levelname)s] -  MESSAGE = %(message)s',
-        level=logging.INFO)
+    logger = telebot.logger
+    formatter = logging.Formatter('[%(asctime)s] %(thread)d {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s',
+                                  '%m-%d %H:%M:%S')
+    ch = logging.StreamHandler(sys.stdout)
+    logger.addHandler(ch)
+    logger.setLevel(logging.DEBUG)  # or use logging.INFO
+    ch.setFormatter(formatter)
     try:
-        logging.info('Status : Running')
         bot.polling()
     except Exception as  e:
         logging.warn('Status : Error {}'.format(e))
+        bot.polling()
+
