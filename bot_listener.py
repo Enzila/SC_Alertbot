@@ -68,7 +68,7 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)  # or use logging.INFO
     ch.setFormatter(formatter)
     try:
-        bot.polling()
+        bot.infinity_polling(True)
     except Exception as  e:
         logging.warn('Status : Error {}'.format(e))
         bot.polling()
